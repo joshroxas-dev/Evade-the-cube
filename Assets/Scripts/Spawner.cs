@@ -5,23 +5,41 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    private float m_SpawnInterval = 2.0f;
-    private float m_Timer = 0;
+    public GameObject enemy2Prefab;
+    public Vector2 SpawnXRange;
     // Start is called before the first frame update
     void Start()
     {
-        Instantiate(enemyPrefab);
+        InvokeRepeating(nameof(SpawnCatcher), 0, 2.0f);
+        InvokeRepeating(nameof(SpawnEvader), 1, 3.0f);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SpawnCatcher()
     {
-        m_Timer += Time.deltaTime;
+        SpawnEnemy(EnemyType.Catcher);
+    }
 
-        if (m_Timer >= m_SpawnInterval)
+    private void SpawnEvader()
+    {
+        SpawnEnemy(EnemyType.Evader);
+    }
+
+    private void SpawnEnemy(EnemyType enemyType)
+    {
+        Vector3 spawnPostion = new Vector3(
+                    Random.Range(SpawnXRange[0], SpawnXRange[1]),
+                    enemyPrefab.transform.position.y,
+                    enemyPrefab.transform.position.z);
+
+        if (enemyType == EnemyType.Evader)
         {
-            Instantiate(enemyPrefab);
-            m_Timer = 0;
+            Instantiate(enemyPrefab, spawnPostion, enemyPrefab.transform.rotation);
         }
+        else
+        {
+            Instantiate(enemy2Prefab, spawnPostion, enemy2Prefab.transform.rotation);
+
+        }
+
     }
 }
